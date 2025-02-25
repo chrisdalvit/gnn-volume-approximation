@@ -22,7 +22,7 @@ class ConvexHullDataset(Dataset):
     def get(self, idx):
         return Data(
             x=torch.index_select(torch.tensor(self.data[idx]['points']), 0, torch.tensor(self.data[idx]['vertices'])) ,
-            y=torch.tensor(self.data[idx]['area']),
+            y=torch.tensor(self.data[idx]['volume']),
             edge_index=torch.tensor([[0, 1, 1, 2, 2, 0], 
                                      [1, 0, 2, 1, 0, 2]])
         )
