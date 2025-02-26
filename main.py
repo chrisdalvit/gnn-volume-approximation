@@ -4,8 +4,10 @@ from torch_geometric.loader import DataLoader
 from dataset.dataset import ConvexHullDataset
 from model import ConvexHullModel
 
-train_dataset = ConvexHullDataset(root='dataset/train.json')
-test_dataset = ConvexHullDataset(root='dataset/test.json')
+undirected = False
+normalize = True
+train_dataset = ConvexHullDataset(root='dataset/train.json', undirected=undirected, normalize=normalize)
+test_dataset = ConvexHullDataset(root='dataset/test.json', undirected=undirected, normalize=normalize) 
 train_loader = DataLoader(train_dataset, batch_size=8)
 test_loader = DataLoader(test_dataset, batch_size=8)
 
@@ -22,7 +24,7 @@ def compute_eval_metric(model, dataloader, criterion):
         losses.append(loss)
     return torch.stack(losses, dim=0).mean().item()
 
-for epoch in range(300):
+for epoch in range(250):
     model.train()
     losses = []
     for sample in train_loader:
@@ -36,3 +38,5 @@ for epoch in range(300):
         eval_loss = compute_eval_metric(model, test_loader, criterion)
         train_loss = torch.stack(losses, dim=0).mean().item()
         print(f'Loss {epoch} -> Train: {train_loss:.2f} / Test: {eval_loss:.2f}')
+        
+torch.save(model.state_dict(), 'model.pth')
