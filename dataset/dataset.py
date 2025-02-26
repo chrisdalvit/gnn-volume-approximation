@@ -24,8 +24,9 @@ class ConvexHullDataset(Dataset):
     def get(self, idx):
         vs = torch.index_select(torch.tensor(self.data[idx]['points']), 0, torch.tensor(self.data[idx]['vertices']))
         volume = torch.tensor(self.data[idx]['volume'])
-        edge_index = torch.tensor([[0, 1, 2], 
-                                   [1, 2, 0]])
+        upper = torch.arange(0, len(vs))
+        lower = upper.roll(-1)
+        edge_index = torch.stack((upper, lower))
         
         if self.undirected:
             edge_index = to_undirected(edge_index)
